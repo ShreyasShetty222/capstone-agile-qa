@@ -1,0 +1,13 @@
+TestID,StoryID,Summary,Preconditions,Steps,Expected
+TC001,US001,Login with valid credentials,App is reachable,"1. Open site
+2. Enter valid username/password
+3. Click Login",Dashboard is displayed with balance
+TC002,US001,Login with invalid credentials,App is reachable,"1. Open site
+2. Enter invalid credentials
+3. Click Login",Error message shown and login fails
+TC003,US002,Search customer by email,User is logged in and Customers page is accessible,"1. Navigate to Customers
+2. Enter email in search
+3. Click Search",Matching customer appears in list
+TC004,US002,Add new customer,User is logged in and Add Customer page is accessible,"1. Go to Add Customer
+2. Enter name, email, phone
+3. Save",Customer saved and visible in the list

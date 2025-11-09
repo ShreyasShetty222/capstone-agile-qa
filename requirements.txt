@@ -1,0 +1,15 @@
+﻿# Core testing and utilities
+pytest
+pytest-xdist
+pytest-parallel
+allure-pytest
+requests
+pandas
+openpyxl
+
+# Web automation
+selenium
+webdriver-manager
+
+# Mobile automation
+Appium-Python-Client

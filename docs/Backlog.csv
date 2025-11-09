@@ -1,0 +1,7 @@
+IssueType,ID,App,Summary,Description,Priority,StoryPoints
+Story,US001,Banking,"As a customer, I want to log in and view my account balance.","Acceptance Criteria:
+- Valid credentials → Dashboard opens and balance is visible
+- Invalid credentials → Error message displayed",High,3
+Story,US002,E-Commerce,"As an admin, I want to add customers with details to manage users.","Acceptance Criteria:
+- Able to add a customer with name and email
+- New customer appears in the customer list",High,5

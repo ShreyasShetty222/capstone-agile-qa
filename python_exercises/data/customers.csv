@@ -1,0 +1,5 @@
+﻿customer_id,first_name,last_name,email,city,is_active
+101,Anita,Sharma,anita@example.com,Mumbai,True
+102,Ravi,Khan,ravi.khan@example.com,Delhi,True
+103,Meera,Patil,meera.patil@example.com,Pune,False
+104,Ajay,Verma,ajay.verma@example.com,Bengaluru,True

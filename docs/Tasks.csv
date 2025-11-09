@@ -1,0 +1,7 @@
+ParentID,IssueType,TaskID,Summary,Assignee,EstimateHrs
+US001,Task,T001,Write test cases for login/logout,,4
+US001,Task,T002,Develop Selenium POM for banking login,,6
+US001,Task,T003,Execute regression and log bugs,,4
+US002,Task,T004,Create test cases for search/add customer,,4
+US002,Task,T005,Automate e-comm search/add with Selenium,,8
+US002,Task,T006,Integrate with CI (Jenkins) and reports,,6

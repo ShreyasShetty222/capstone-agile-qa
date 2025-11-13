@@ -31,7 +31,7 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           mkdir -p reports/allure-results/${{ matrix.browser }}
-          xvfb-run -s "-screen 0 1920x1080x24" pytest -q selenium_web/tests -m "not mobile" --maxfail=1 --alluredir=reports/allure-results/${{ matrix.browser }} --browser ${{ matrix.browser }}
+          xvfb-run -s "-screen 0 1920x1080x24" pytest --browser ${{ matrix.browser }} -q selenium_web/tests -m "not mobile" --maxfail=1 --alluredir=reports/allure-results/${{ matrix.browser }}
 
       - name: Upload Allure results artifact (per-browser)
         if: always()
@@ -39,5 +39,6 @@ jobs:
         with:
           name: allure-results-${{ matrix.browser }}
           path: reports/allure-results/${{ matrix.browser }}
+
 
 

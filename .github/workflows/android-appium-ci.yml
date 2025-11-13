@@ -39,15 +39,33 @@ jobs:
           npm install -g appium@3
           appium --version
 
-      - name: Start Android emulator (stable config)
+      - name: Start Android emulator (robust config)
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
           arch: x86_64
           target: google_apis
-          emulator-options: -no-snapshot -no-audio -no-window
+          emulator-options: -no-snapshot -no-audio -no-window -wipe-data -gpu swiftshader_indirect
+          force-avd-creation: true
+          emulator-boot-timeout: 900000
           disable-animations: true
           script: |
+            # ensure adb server is fresh
+            adb kill-server || true
+            adb start-server || true
+            echo "adb devices (before wait):"
+            adb devices
+            # wait up to ~15 minutes for boot_completed
+            for i in {1..180}; do
+              out=$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null || echo "")
+              if [ "$out" = "1" ]; then
+                echo "emulator boot completed"
+                break
+              fi
+              echo "waiting for emulator to boot... ($i)"
+              sleep 5
+            done
+            echo "adb devices (after wait):"
             adb devices
 
       - name: Show adb devices
@@ -83,6 +101,7 @@ jobs:
         with:
           name: allure-results
           path: reports/allure-results
+
 
 
 

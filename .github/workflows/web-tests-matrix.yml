@@ -1,4 +1,4 @@
-name: Web Tests Matrix (Chrome + Firefox)
+﻿name: Web Tests Matrix (Chrome + Firefox)
 
 on:
   push:
@@ -7,12 +7,17 @@ on:
 jobs:
   web-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+
     strategy:
-      fail-fast: false
       matrix:
         browser: [chrome, firefox]
 
-    env:`n      BROWSER: firefox`n      HEADLESS: true`n    steps:
+    env:
+      BROWSER: ${{ matrix.browser }}
+      HEADLESS: true
+
+    steps:
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -26,12 +31,12 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - name: Create Allure results folders
+        run: mkdir -p reports/allure-results/${{ matrix.browser }}
+
       - name: Run pytest (not mobile) on ${{ matrix.browser }}
-        env:
-          PYTHONUNBUFFERED: 1
         run: |
-          mkdir -p reports/allure-results/${{ matrix.browser }}
-          xvfb-run -s "-screen 0 1920x1080x24" pytest --browser ${{ matrix.browser }} -q selenium_web/tests -m "not mobile" --maxfail=1 --alluredir=reports/allure-results/${{ matrix.browser }}
+          pytest -q --maxfail=1 --alluredir=reports/allure-results/${{ matrix.browser }} -m "not mobile"
 
       - name: Upload Allure results artifact (per-browser)
         if: always()
@@ -39,10 +44,3 @@ jobs:
         with:
           name: allure-results-${{ matrix.browser }}
           path: reports/allure-results/${{ matrix.browser }}
-
-
-
-
-
-
-

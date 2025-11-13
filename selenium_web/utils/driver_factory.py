@@ -1,4 +1,4 @@
-import os
+﻿import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
@@ -18,7 +18,9 @@ def create_driver(browser=None, headless=None):
         options = FirefoxOptions()
         if headless:
             options.headless = True
-        service = FirefoxService(GeckoDriverManager().install())
+        driver_path = GeckoDriverManager().install()
+        # write geckodriver log for CI debugging
+        service = FirefoxService(executable_path=driver_path, log_path='geckodriver.log')
         driver = webdriver.Firefox(service=service, options=options)
     else:
         options = ChromeOptions()

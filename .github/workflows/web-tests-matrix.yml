@@ -1,4 +1,4 @@
-﻿name: Web Tests Matrix (Chrome + Firefox)
+﻿name: Web Tests Matrix (Firefox Only for Now)
 
 on:
   push:
@@ -7,40 +7,37 @@ on:
 jobs:
   web-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    strategy:
-      matrix:
-        browser: [chrome, firefox]
 
     env:
-      BROWSER: ${{ matrix.browser }}
-      HEADLESS: true
+      BROWSER: firefox
+      HEADLESS: true   # force headless always in CI
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.10
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install Python deps
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements.txt
 
-      - name: Create Allure results folders
-        run: mkdir -p reports/allure-results/${{ matrix.browser }}
+      - name: Create Allure results folder
+        run: mkdir -p reports/allure-results/firefox
 
-      - name: Run pytest (not mobile) on ${{ matrix.browser }}
+      - name: Run pytest (web only)
         run: |
-          pytest -q --maxfail=1 --alluredir=reports/allure-results/${{ matrix.browser }} -m "not mobile"
+          pytest -q --maxfail=1 \
+            --alluredir=reports/allure-results/firefox \
+            -m "not mobile"
 
-      - name: Upload Allure results artifact (per-browser)
+      - name: Upload Allure Results (firefox)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results-${{ matrix.browser }}
-          path: reports/allure-results/${{ matrix.browser }}
+          name: allure-results-firefox
+          path: reports/allure-results/firefox

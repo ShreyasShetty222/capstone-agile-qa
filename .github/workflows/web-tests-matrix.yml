@@ -12,7 +12,7 @@ jobs:
       matrix:
         browser: [chrome, firefox]
 
-    steps:
+    env:`n      BROWSER: firefox`n      HEADLESS: true`n    steps:
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -39,6 +39,7 @@ jobs:
         with:
           name: allure-results-${{ matrix.browser }}
           path: reports/allure-results/${{ matrix.browser }}
+
 
 
 

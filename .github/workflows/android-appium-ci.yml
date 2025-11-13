@@ -45,9 +45,10 @@ jobs:
           api-level: 33
           arch: x86_64
           target: google_apis
-          emulator-options: -no-window -no-audio -no-boot-anim
+          emulator-options: -no-window -no-audio -no-boot-anim -no-snapshot -no-snapshot-save -no-snapshot-load
           force-avd-creation: true
-          emulator-boot-timeout: 300000
+          emulator-boot-timeout: 600000
+          disable-animations: true
           script: |
             echo "Emulator started"
 
@@ -84,4 +85,5 @@ jobs:
         with:
           name: allure-results
           path: reports/allure-results
+
 

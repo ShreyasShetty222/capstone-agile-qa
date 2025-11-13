@@ -39,7 +39,7 @@ jobs:
           npm install -g appium@3
           appium --version
 
-      - name: Start Android emulator (robust config)
+      - name: Start Android emulator (robust config v2)
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
@@ -50,10 +50,40 @@ jobs:
           emulator-boot-timeout: 900000
           disable-animations: true
           script: |
-            # ensure adb server is fresh
+            set -ex
+            # restart adb and show devices
             adb kill-server || true
             adb start-server || true
-            echo "adb devices (before wait):"
+            echo "adb devices (initial):"
+            adb devices || true
+
+            # retry connecting over TCP (emulator sometimes needs this)
+            for i in {1..20}; do
+              echo "Attempting adb connect 127.0.0.1:5555 (try $i)"
+              adb connect 127.0.0.1:5555 || true
+              sleep 2
+              adb devices | grep emulator-5554 && break || true
+            done
+
+            # wait for boot property with a more forgiving loop
+            for i in {1..360}; do
+              echo "check boot completed attempt $i"
+              if adb -s emulator-5554 wait-for-device 2>/dev/null; then
+                out=$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null || echo "")
+                if [ "$out" = "1" ]; then
+                  echo "emulator boot completed"
+                  break
+                fi
+              fi
+              sleep 5
+            done
+
+            echo "adb devices (after wait):"
+            adb devices || true
+
+            # try a small unlock and sanity commands
+            adb -s emulator-5554 shell input keyevent 82 || true
+            adb -s emulator-5554 shell echo "ready" || true (before wait):"
             adb devices
             # wait up to ~15 minutes for boot_completed
             for i in {1..180}; do
@@ -101,6 +131,7 @@ jobs:
         with:
           name: allure-results
           path: reports/allure-results
+
 
 
 

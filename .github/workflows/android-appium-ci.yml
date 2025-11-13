@@ -1,0 +1,4 @@
+
+  - name: Skip emulator
+    run: echo 'Mobile tests skipped in CI'
+

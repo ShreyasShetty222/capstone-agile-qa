@@ -1,4 +1,4 @@
-﻿import os
+import os
 import pytest
 
 def pytest_addoption(parser):

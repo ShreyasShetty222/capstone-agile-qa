@@ -1,4 +1,4 @@
-name: Android Mobile CI (Appium + pytest) - non-mobile only
+﻿name: Android Mobile CI (Appium + pytest) - non-mobile only
 
 on:
   push:
@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
-    # job-level environment: ensures tests use firefox in CI and run headless
     env:
       BROWSER: firefox
       HEADLESS: true

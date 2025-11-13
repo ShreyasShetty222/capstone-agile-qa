@@ -36,7 +36,7 @@ jobs:
 
       - name: Install Appium (global)
         run: |
-          npm install -g appium@3
+          npm install -g appium@2
           appium --version
 
       - name: Start Android emulator (robust config v2)
@@ -131,6 +131,7 @@ jobs:
         with:
           name: allure-results
           path: reports/allure-results
+
 
 
 

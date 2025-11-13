@@ -9,7 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
-    env:`n      BROWSER: firefox`n      HEADLESS: true`n    steps:
+    # job-level environment: ensures tests use firefox in CI and run headless
+    env:
+      BROWSER: firefox
+      HEADLESS: true
+
+    steps:
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -44,4 +49,3 @@ jobs:
         with:
           name: allure-results
           path: reports/allure-results
-

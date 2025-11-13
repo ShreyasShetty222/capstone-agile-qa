@@ -1,0 +1,84 @@
+name: Android Mobile CI (Appium + pytest)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  mobile-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up NodeJS (for Appium)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Appium (global)
+        run: |
+          npm install -g appium@3
+          appium --version
+
+      - name: Create and boot Android emulator (API 33)
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          arch: x86_64
+          target: google_apis
+          emulator-options: -no-window -no-audio -no-boot-anim
+          force-avd-creation: true
+          timeout: 300000
+
+      - name: Show adb devices
+        run: adb devices
+
+      - name: Start Appium server
+        run: |
+          nohup appium --allow-insecure="*:chromedriver_autodownload" > appium.log 2>&1 &
+          sleep 5
+          tail -n +1 appium.log | sed -n '1,120p'
+
+      - name: Wait for emulator + appium ready
+        run: |
+          adb wait-for-device
+          until adb shell getprop sys.boot_completed | grep -m 1 '1'; do
+            echo "Waiting for emulator to finish booting..."
+            sleep 5
+          done
+          for i in {1..10}; do
+            curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:4723/status && break || sleep 3
+          done
+          echo "Emulator and Appium should be ready"
+
+      - name: Run pytest mobile tests (generate Allure results)
+        env:
+          BASE_URL: "https://the-internet.herokuapp.com"
+        run: |
+          pytest -q --maxfail=1 --alluredir=reports/allure-results -m "mobile or not mobile"
+
+      - name: Upload Allure results artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: reports/allure-results

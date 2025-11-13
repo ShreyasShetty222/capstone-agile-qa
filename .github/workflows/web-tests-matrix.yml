@@ -13,18 +13,10 @@ jobs:
       HEADLESS: true   # force headless always in CI
 
     steps:
-      - name: Upload Allure Results (firefox)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-results-firefox
-          path: reports/allure-results/firefox
-
-      - name: Upload driver logs (for debugging)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: driver-logs-firefox
-          path: |
-            chromedriver.log
-            geckodriver.log
+      - name: Run pytest (web only) under Xvfb
+        run: |
+          # run tests inside Xvfb (gives a display to Firefox)
+          xvfb-run -s "-screen 0 1920x1080x24" \
+            pytest -q --maxfail=1 \
+              --alluredir=reports/allure-results/firefox \
+              -m "not mobile"

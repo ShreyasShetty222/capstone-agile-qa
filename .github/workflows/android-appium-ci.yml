@@ -47,7 +47,9 @@ jobs:
           target: google_apis
           emulator-options: -no-window -no-audio -no-boot-anim
           force-avd-creation: true
-          timeout: 300000
+          emulator-boot-timeout: 300000
+          script: |
+            echo "Emulator started"
 
       - name: Show adb devices
         run: adb devices
@@ -82,3 +84,4 @@ jobs:
         with:
           name: allure-results
           path: reports/allure-results
+

@@ -50,3 +50,16 @@ jobs:
         with:
           name: allure-results-firefox
           path: reports/allure-results/firefox
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-xdist allure-pytest webdriver-manager selenium
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run pytest (web only) under Xvfb
+        run: |
+          xvfb-run -s "-screen 0 1920x1080x24" \
+            python -m pytest -q --maxfail=1 \
+              --alluredir=reports/allure-results/firefox \
+              -m "not mobile"

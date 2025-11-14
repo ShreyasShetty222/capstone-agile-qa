@@ -38,6 +38,7 @@ def create_driver(browser=None, headless=None):
         options.add_argument('--remote-debugging-port=9222')
         options.add_argument('--disable-software-rasterizer')
         options.add_argument('--disable-background-networking')
+        options.add_argument('--headless=new')
         options.add_argument('--disable-background-timer-throttling')
         options.add_argument('--disable-features=VizDisplayCompositor')
         options.add_argument('--single-process')

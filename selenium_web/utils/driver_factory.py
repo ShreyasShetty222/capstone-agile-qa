@@ -22,12 +22,13 @@ def create_driver(browser=None, headless=None):
         driver = webdriver.Firefox(service=service, options=options)
     else:
         options = ChromeOptions()
-        # set binary location if provided (CI will set CHROME_BINARY)
+
+        # if CI provided a binary path, use it
         chrome_bin = os.environ.get("CHROME_BINARY")
         if chrome_bin:
             options.binary_location = chrome_bin
 
-        # Recommended flags for headless CI Chrome
+        # robust CI flags
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
         options.add_argument('--disable-gpu')
@@ -43,15 +44,13 @@ def create_driver(browser=None, headless=None):
         options.add_argument('--no-zygote')
 
         if headless:
-            # prefer new headless if available
             try:
                 options.add_argument('--headless=new')
             except Exception:
                 options.add_argument('--headless')
 
-        # webdriver-manager will download a compatible chromedriver
+        # webdriver-manager downloads compatible chromedriver for us
         driver_path = ChromeDriverManager().install()
-        # instruct chromedriver to write verbose log to file
         service = ChromeService(executable_path=driver_path, log_path='chromedriver.log')
         driver = webdriver.Chrome(service=service, options=options)
 
